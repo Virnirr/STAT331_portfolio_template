@@ -11,7 +11,7 @@ execute:
   echo: true
 ---
 
-[**My Grade:**]{.underline} I believe my grade equivalent to course work evidenced below to be an __.
+[**My Grade:**]{.underline} I believe my grade equivalent to course work evidenced below to be an \_\_.
 
 [**Learning Objective Evidence:**]{.underline} In the code chunks below, provide code from Lab or Challenge assignments where you believe you have demonstrated proficiency with the specified learning target. Be sure to specify **where** the code came from (e.g., Lab 4 Question 2).
 
@@ -24,12 +24,32 @@ execute:
 ```{r}
 #| label: wd-1-csv
 
+# Lab 2 Question  1
+
+surveys <- read_csv(here::here("data", "surveys.csv"))
 ```
 
 -   `xlsx`
 
 ```{r}
 #| label: wd-1-xlsx
+
+# PA 4 Question 3
+
+# First, read the entire sheet to determine the total number of rows
+total_rows <- nrow(read_xlsx(here::here("data", "gov_spending_per_capita.xlsx"), 
+                             sheet = "Share of Govt. spending"))
+
+# Calculate n_max by excluding the first 6 and last 6 rows
+n_max_value <- total_rows - 6 - 6
+
+military_clean <- read_xlsx(here::here("data", 
+                                 "gov_spending_per_capita.xlsx"), 
+                      sheet = "Share of Govt. spending", 
+                      skip  = 6, 
+                      n_max = n_max_value, 
+                      na = c(". .", "xxx")
+                      )
 
 ```
 
@@ -38,6 +58,10 @@ execute:
 ```{r}
 #| label: wd-1-txt
 
+# Checkins 2.3 question 4
+
+ages_mystery <- read_delim(file = here::here("Week2", "Check-ins", "Ages_Data", "ages_mystery.txt"), delim="|")
+
 ```
 
 **WD-2: I can select necessary columns from a dataset.**
@@ -45,6 +69,15 @@ execute:
 ```{r}
 #| label: wd-2
 
+# Lab 3 question 4
+
+teacher_evals_clean <- teacher_evals |> 
+  rename(sex = gender) |>
+  filter(no_participants > 10) |> 
+  mutate(
+    across(.cols = c(teacher_id:class_duration), as.numeric)
+  ) |> 
+  select(course_id:SET_score_avg, percent_failed, academic_degree, seniority, sex)
 ```
 
 **WD-3: I can filter rows from a dataframe for a *variety* of data types (e.g., numeric, integer, character, factor, date).**
@@ -54,6 +87,13 @@ execute:
 ```{r}
 #| label: wd-3-numeric
 
+# Lab 3 question 9
+
+teacher_evals_clean |> 
+  count(course_id, teacher_id) |>
+  filter(n == 9) |>
+  nrow()
+
 ```
 
 -   character -- specifically a string (example must use functions from **stringr**)
@@ -61,6 +101,13 @@ execute:
 ```{r}
 #| label: wd-3-string
 
+# PA-5 question 6
+
+tibble(message) |>
+  mutate(string_length = str_length(message)) |>
+  slice_max(order_by = string_length,
+            n = 1) |>
+  select(message)
 ```
 
 -   factor
@@ -68,12 +115,24 @@ execute:
 ```{r}
 #| label: wd-3-factor
 
+
 ```
 
 -   date (example must use functions from **lubridate**)
 
 ```{r}
 #| label: wd-3-date
+
+# PA 5.2 Question 3
+
+suspects <- suspects |> 
+  mutate(Weekdays = wday(Time.Spotted,
+              label = TRUE,
+              abbr = FALSE
+              )
+         ) |> 
+  filter(!Weekdays %in% c("Tuesday","Thursday"))
+suspects
 
 ```
 
@@ -84,12 +143,28 @@ execute:
 ```{r}
 #| label: wd-4-numeric
 
+# Lab 3 question 4
+
+teacher_evals_clean <- teacher_evals |> 
+  rename(sex = gender) |>
+  filter(no_participants > 10) |> 
+  mutate(
+    across(.cols = c(teacher_id:class_duration), as.numeric)
+  ) |> 
+  select(course_id:SET_score_avg, percent_failed, academic_degree, seniority, sex)
+
 ```
 
 -   character -- specifically a string (example must use functions from **stringr**)
 
 ```{r}
 #| label: wd-4-string
+
+# PA 5.1 question 3 (decode the message)
+clean_message_remove_ugh <- str_remove_all(clean_message_truncate_16,
+           pattern = "ugh+[:punct:]"
+           )
+clean_message_remove_ugh
 
 ```
 
@@ -98,12 +173,47 @@ execute:
 ```{r}
 #| label: wd-4-factor
 
+# Lab 4 question 3
+
+ca_childcare <- ca_childcare |> 
+  mutate(county_name = str_remove(county_name, " County")) |>
+  mutate(region = fct_collapse(county_name,
+                              "Superior California" = c("Butte", "Colusa", "El Dorado", "Glenn", "Lassen", "Modoc", "Nevada", "Placer", "Plumas", "Sacramento", "Shasta", "Sierra", "Siskiyou", "Sutter", "Tehama","Yolo", "Yuba"),
+                              "North Coast" = c("Del Norte", "Humboldt", "Lake", "Mendocino", "Napa", "Sonoma", "Trinity"),
+                              "San Francisco Bay Area" = c("Alameda", "Contra Costa", "Marin", "San Francisco", "San Mateo",
+             "Santa Clara", "Solano"),
+                              "Northern San Joaquin Valley" = c("Alpine", "Amador", "Calaveras", "Madera", "Mariposa", "Merced", "Mono",
+             "San Joaquin", "Stanislaus", "Tuolumne"),
+                              "Central Coast" = c("Monterey", "San Benito", "San Luis Obispo", "Santa Barbara", "Santa Cruz","Ventura"),
+                              "Southern San Joaquin Valley" = c("Fresno", "Inyo", "Kern", "Kings", "Tulare"),
+                              "Inland Empire" = c("Riverside", "San Bernardino"),
+                              "Los Angeles County" = c("Los Angeles"),
+                              "Orange County" = c("Orange"),
+                              "San Diego County" = c("Imperial", "San Diego")
+  ))
 ```
 
 -   date (example must use functions from **lubridate**)
 
 ```{r}
 #| label: wd-4-date
+
+# PA 5.2 Question 5
+
+# Define start and end time for the sunset period
+start_time <- hms("08:00:00")
+end_time <- hms("16:00:00")
+
+# Filter suspects based on whether the time spotted is between 4:00 PM and 11:59 PM
+suspects <- suspects |>
+  mutate(
+    TimeOnly = hms(format(Time.Spotted, "%H:%M:%S")) # Extract time-only part
+  ) |>
+  filter(
+    TimeOnly >= start_time & TimeOnly < end_time # Direct comparison
+  )
+
+suspects
 
 ```
 
@@ -114,12 +224,17 @@ execute:
 ```{r}
 #| label: wd-5-left
 
+# Check-in 4.1 Question 3
+left_join(prof_info, prof_course)
+
 ```
 
 -   `right_join()`
 
 ```{r}
 #| label: wd-5-right
+
+
 
 ```
 
@@ -128,6 +243,17 @@ execute:
 ```{r}
 #| label: wd-5-inner
 
+# Lab 5 
+witness_1_interview <- person |>
+  filter(address_street_name == "Northwestern Dr") |>
+  slice_max(order_by = address_number, n = 1) |>
+  inner_join(interview, join_by(id == person_id))
+
+witness_2_interview <- person |>
+  filter(str_detect(name, "Annabel"),
+         address_street_name == "Franklin Ave") |>
+  inner_join(interview, join_by(id == person_id))
+
 ```
 
 -   `full_join()`
@@ -135,6 +261,13 @@ execute:
 ```{r}
 #| label: wd-5-full
 
+# Check-in 4.1 question 4
+
+prof_course |>
+  pivot_longer(cols = c(Stat_331, Stat_330, Stat_431),
+               names_to = "course",
+               values_to = "can_teach") |> 
+  full_join(course_info)
 ```
 
 **WD-6: I can use filtering joins to filter rows from a dataframe.**
@@ -144,12 +277,20 @@ execute:
 ```{r}
 #| label: wd-6-semi
 
+
 ```
 
 -   `anti_join()`
 
 ```{r}
 #| label: wd-6-anti
+
+
+# PA 4 question 4
+
+military_clean <- anti_join(military_clean,
+                            cont_region, by = join_by(Country == Region)
+                            )
 
 ```
 
@@ -160,6 +301,12 @@ execute:
 ```{r}
 #| label: wd-7-long
 
+# PA 4 Question 6
+military_long <- military_clean |> 
+  pivot_longer("1988":"2019",
+               names_to = "Year",
+               values_to = "Spending"
+               )
 ```
 
 -   `pivot_wider()`
@@ -167,6 +314,15 @@ execute:
 ```{r}
 #| label: wd-7-wide
 
+# lab 4 question 4
+
+ca_childcare |>
+  filter(study_year %in% c(2008, 2018)) |>
+  group_by(study_year, region) |>
+  summarize(median = median(mhi_2018)) |>
+  pivot_wider(id_cols = region,
+              names_from = study_year,
+              values_from = median)
 ```
 
 ## Reproducibility
@@ -182,12 +338,32 @@ I've done this in the following provided assignments:
 ```{r}
 #| label: r-2-1
 
+# Lab 2 question 4
+ggplot(data = surveys, aes(x = weight, y = hindfoot_length)) +
+  geom_point(alpha = 0.5) +
+  facet_wrap(~species) +
+  labs(
+    title = "relationship between weight and hindfoot_length of different species",
+    subtitle = "y-axis representing hindfoot_length (mm)",
+    x = "weight (g)",  # x-axis label
+    y = ""
+  )
+
 ```
 
 -   Example of **dplyr** pipeline
 
 ```{r}
 #| label: r-2-2
+
+
+# Lab 3 question 11
+teacher_evals_clean |>
+  filter(seniority == 1) |>
+  group_by(teacher_id) |>
+  summarize(average_student_failing = mean(percent_failed)) |>
+  filter(average_student_failing >= max(average_student_failing) | average_student_failing <= min(average_student_failing)) |>
+  select(teacher_id, average_student_failing)
 
 ```
 
@@ -196,6 +372,7 @@ I've done this in the following provided assignments:
 ```{r}
 #| label: r-2-3
 
+# Lab 4 question 
 ```
 
 **R-3: I can write robust programs that are resistant to changes in inputs.**
@@ -205,12 +382,15 @@ I've done this in the following provided assignments:
 ```{r}
 #| label: r-3-example
 
+
 ```
 
 -   Example of function stops
 
 ```{r}
 #| label: r-3-function-stops
+
+
 
 ```
 
@@ -223,6 +403,18 @@ I've done this in the following provided assignments:
 ```{r}
 #| label: dvs-1-num
 
+# Lab 2 question 4
+
+ggplot(data = surveys, aes(x = weight, y = hindfoot_length)) +
+  geom_point(alpha = 0.5) +
+  facet_wrap(~species) +
+  labs(
+    title = "relationship between weight and hindfoot_length of different species",
+    subtitle = "y-axis representing hindfoot_length (mm)",
+    x = "weight (g)",  # x-axis label
+    y = ""
+  )ggplot(data = surveys, aes(x = weight, y = hindfoot_length)) + geom_point(alpha = 0.5) + facet_wrap(~species) + labs( title = "relationship between weight and hindfoot_length of different species", subtitle = "y-axis representing hindfoot_length (mm)", x = "weight (g)", # x-axis label y = "" )
+
 ```
 
 -   at least one numeric variable and one categorical variable
@@ -230,12 +422,26 @@ I've done this in the following provided assignments:
 ```{r}
 #| label: dvs-2-num-cat
 
+# Lab 2 question 8
+ggplot(data = surveys, aes(x = weight, y = species)) +
+  geom_boxplot(outliers = FALSE) +
+  geom_jitter(color = "steelblue", alpha = 0.25, height = 0.1) +  # Adding jitter height to avoid overlapping points
+  labs(
+    x = "Weight (g)",
+    y = "",
+    title = "Species By Weight(g)"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
 -   at least two categorical variables
 
 ```{r}
 #| label: dvs-2-cat
+
+# https://r-primers.andrewheiss.com/visualize-data/02-bar-charts/02-aesthetics.html
+ggplot(data = diamonds) +
+  geom_bar(mapping = aes(x = cut, color = cut))
 
 ```
 
@@ -244,6 +450,7 @@ I've done this in the following provided assignments:
 ```{r}
 #| label: dvs-2-date
 
+# Lab 4
 ```
 
 **DVS-2: I use plot modifications to make my visualization clear to the reader.**
@@ -253,6 +460,16 @@ I've done this in the following provided assignments:
 ```{r}
 #| label: dvs-2-1
 
+# Lab 2 Question 8
+ggplot(data = surveys, aes(x = weight, y = species)) +
+  geom_boxplot(outliers = FALSE) +
+  geom_jitter(color = "steelblue", alpha = 0.25, height = 0.1) +  # Adding jitter height to avoid overlapping points
+  labs(
+    x = "Weight (g)",
+    y = "",
+    title = "Species By Weight(g)"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
 -   I can modify the text in my plot to be more readable
@@ -260,12 +477,26 @@ I've done this in the following provided assignments:
 ```{r}
 #| label: dvs-2-2
 
+
+# Challenge 2 Medium: Ridge Plots
+ggplot(data = surveys, aes(x = weight, y = species)) +
+  geom_density_ridges(outliers = FALSE) +
+  geom_jitter(color = "steelblue", alpha = 0.25, height = 0.1) +  # Adding jitter height to avoid overlapping points
+  labs(
+    x = "Weight (g)",
+    y = "",
+    title = "Species By Weight (g)"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
 ```
 
 -   I can reorder my legend to align with the colors in my plot
 
 ```{r}
 #| label: dvs-2-3
+
 
 ```
 
@@ -275,6 +506,7 @@ I've done this in the following provided assignments:
 
 ```{r}
 #| label: dvs-3-1
+
 
 ```
 
@@ -299,6 +531,13 @@ I've done this in the following provided assignments:
 ```{r}
 #| label: dvs-4-summarize
 
+# Lab 3 Question 12
+
+teacher_evals_clean |> 
+  filter(sex == "female", academic_degree %in% c("dr", "prof")) |>
+  group_by(teacher_id) |>
+  summarize(average_student_responding = mean(resp_share)) |>
+  filter(average_student_responding >= max(average_student_responding) | average_student_responding <= min(average_student_responding))
 ```
 
 -   Example using `across()`
@@ -306,6 +545,14 @@ I've done this in the following provided assignments:
 ```{r}
 #| label: dvs-4-across
 
+# Lab 3 Question 5
+teacher_evals_clean <- teacher_evals |> 
+  rename(sex = gender) |>
+  filter(no_participants > 10) |> 
+  mutate(
+    across(.cols = c(teacher_id:class_duration), as.numeric)
+  ) |> 
+  select(course_id:SET_score_avg, percent_failed, academic_degree, seniority, sex)
 ```
 
 **DVS-5: I can find summaries of variables across multiple groups.**
@@ -315,12 +562,29 @@ I've done this in the following provided assignments:
 ```{r}
 #| label: dvs-5-1
 
+# Lab 3 question 8
+count_of_male_female <- teacher_evals_clean |>
+  select(sex) |>
+  group_by(sex) |>
+  count()
+
+
 ```
 
 -   Example 2
 
 ```{r}
 #| label: dvs-5-2
+
+
+# Lab 3 question 10
+teacher_evals_clean |>
+  filter(question_no == 901) |>
+  group_by(teacher_id) |>
+  summarize(average_rating = mean(SET_score_avg)) |>
+  filter(average_rating >= max(average_rating) | 
+         average_rating <= min(average_rating)) |>
+  arrange(average_rating)
 
 ```
 
@@ -330,6 +594,8 @@ I've done this in the following provided assignments:
 
 ```{r}
 #| label: dvs-6-1
+
+
 
 ```
 
@@ -347,12 +613,43 @@ I've done this in the following provided assignments:
 ```{r}
 #| label: dvs-7-1
 
+# Challenge 3 question 2
+teacher_evals_compare |> 
+  ggplot(mapping = aes(x = sen_level, fill = SET_level)) +
+  geom_bar() +
+  labs(
+    x = "Seniority of Instructor",
+    y = "",
+    title = "Number of Sections"
+  ) +
+  scale_fill_manual(
+    name = "SET Level",
+    values = c(
+      "excellent" = rgb(red = 74, green = 117, blue = 168, maxColorValue = 255),
+      "standard" = rgb(red = 188, green = 126, blue = 34, maxColorValue = 255)
+    )
+  ) +
+  theme_bw()
+
 ```
 
 -   Example 2
 
 ```{r}
 #| label: dvs-7-2
+
+
+# Challenge 2 Medium: Ridge Plots
+ggplot(data = surveys, aes(x = weight, y = species)) +
+  geom_density_ridges(outliers = FALSE) +
+  geom_jitter(color = "steelblue", alpha = 0.25, height = 0.1) +  # Adding jitter height to avoid overlapping points
+  labs(
+    x = "Weight (g)",
+    y = "",
+    title = "Species By Weight (g)"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
 
 ```
 
@@ -365,6 +662,11 @@ I've done this in the following provided assignments:
 ```{r}
 #| label: pe-1-one-call
 
+# Lab 3 Question 9
+teacher_evals_clean |> 
+  count(course_id, teacher_id) |>
+  filter(n == 9) |>
+  nrow()
 ```
 
 -   `across()`
@@ -372,12 +674,21 @@ I've done this in the following provided assignments:
 ```{r}
 #| label: pe-1-across
 
+# Lab 3 question 5
+teacher_evals_clean <- teacher_evals |> 
+  rename(sex = gender) |>
+  filter(no_participants > 10) |> 
+  mutate(
+    across(.cols = c(teacher_id:class_duration), as.numeric)
+  ) |> 
+  select(course_id:SET_score_avg, percent_failed, academic_degree, seniority, sex)
 ```
 
 -   `map()` functions
 
 ```{r}
 #| label: pe-1-map-1
+
 
 ```
 
@@ -476,12 +787,31 @@ I've done this in the following provided assignments:
 
 <!-- For the revisions included in your Portfolio, to help me understand the nature of your revisions, please denote somehow the feedback I provided you (e.g., boldface, italics, colored text) before your revisions. -->
 
+Throughout the course, I would always take the feedback from Dr. Theobold and my peer and try to make each and every question from growing to successful, while also providing reflections of the changes.
+
+Example:
+
+The following code was modified from the original to be clearer and more readable for the readers.
+
+```{r}
+teacher_evals_clean |> 
+  count(course_id, teacher_id) |>
+  filter(n == 9) |>
+  nrow()
+```
+
 ## Extending My Thinking
 
 <!-- How did you extended your thinking throughout the course? How did you extend your thinking on the code examples you have provided in your portfolio? -->
+
+I always used what I learned from my past labs and practice activities in future assignments. For example, I would always use the pipe ("\|\>") whenever we have a one directional data flow. In addition, I would always complete the challenges to the best of my ability with everything I have learn thus far.
 
 ## Peer Support & Collaboration
 
 <!-- Include an image or a description of feedback you gave that you are proud of (either in a peer review or in Discord). -->
 
+![](images/clipboard-2152803014.png)
+
 <!-- Include a description of how you grew as a collaborator through the weekly pair programming activities.   -->
+
+Before my discussion with Dr. Theobold, I didn’t fully understand the Developer/Coder protocol established for our team. My collaboration with my partner was largely one-sided—I often took the lead, typing out solutions and implementing my ideas without much input from them. This approach limited my partner’s opportunities to engage and grow as a developer. After our conversation, I made a conscious effort to alternate roles more consistently, ensuring we both contributed by actively listening, discussing, and sharing our ideas as Developers and Coders. This shift allowed for a more balanced and productive collaboration.
