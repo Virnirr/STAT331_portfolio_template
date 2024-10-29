@@ -6,16 +6,22 @@ editor: visual
 
 **Answer each of the following questions with *one sentence* including a brief explanation.**
 
-1. Finish the sentence with another student’s name: "If [Name of Student] doesn’t earn an A, then nobody should, because..." Explain your choice and your reasoning.
+1.  Finish the sentence with another student’s name: "If \[Name of Student\] doesn’t earn an A, then nobody should, because..." Explain your choice and your reasoning.\
+    \
+    If StellaR doesn't earn an A, then nobody should, because she's always trying to ask for help and improve in the discord chat.
 
+2.  What was the most difficult part of the class for you? List a general topic, a specific problem, a kind of work we did, etc. and explain why.\
+    \
+    The most difficult problem in this class was definitely forecat (factor) and utilizing it to change the ordering of graphs.
 
-2. What was the most difficult part of the class for you? List a general topic, a specific problem, a kind of work we did, etc. and explain why.
+3.  What was the easiest part of the class for you? Explain why.\
+    \
+    Easiest part of this class for me is dypr because the logic and syntax is similar to things I have used before (SQL and pandas).
 
+4.  What part of the class surprised or interested you the most? Explain why.\
+    \
+    What surprised me the most is how easy it is to create a beautiful graph using ggplot2 in R. The syntax is easy and straight forward, while also providing many customization.
 
-3. What was the easiest part of the class for you? Explain why.
-
-
-4. What part of the class surprised or interested you the most? Explain why.
-
-
-5. Give one piece of advice to a student just beginning a quarter of STAT 331 that will help them be successful in learning.
+5.  Give one piece of advice to a student just beginning a quarter of STAT 331 that will help them be successful in learning.\
+    \
+    Always do the coursework readings before class to understand the lecture better.
