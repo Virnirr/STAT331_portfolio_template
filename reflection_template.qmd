@@ -235,7 +235,6 @@ left_join(prof_info, prof_course)
 #| label: wd-5-right
 
 
-
 ```
 
 -   `inner_join()`
@@ -372,7 +371,7 @@ teacher_evals_clean |>
 ```{r}
 #| label: r-2-3
 
-# Lab 4 question 
+# Lab 4 question
 ```
 
 **R-3: I can write robust programs that are resistant to changes in inputs.**
@@ -450,7 +449,37 @@ ggplot(data = diamonds) +
 ```{r}
 #| label: dvs-2-date
 
-# Lab 4
+# Lab 4 Question 6:
+
+ca_childcare |> 
+  # data cleaning
+  pivot_longer(cols = mc_infant:mc_preschool,
+               names_to = "study_group",
+               values_to = "median_amount") |>
+  select(study_year, study_group, median_amount, region) |>
+  mutate(study_group = str_to_title(str_remove(study_group, "mc_")),
+         study_group = fct_relevel(study_group, "Infant", "Toddler", "Preschool")) |>
+  # plot
+  ggplot(mapping = aes(x = study_year,
+                       y = median_amount,
+                       color = fct_reorder2(region, study_year, median_amount))) + 
+  geom_point() +
+  facet_wrap(~study_group) +
+  geom_smooth(method = "loess") +
+  labs(
+    x = "Study Year",
+    y = "",
+    subtitle = "Weekly Median Price for Center-Based Childcare ($)",
+    color = "California Region"
+  ) +
+  scale_x_continuous(breaks = seq(2008,
+                                  2018,
+                                  by = 2)) +
+  theme_bw() +
+  theme(
+    aspect.ratio = 1.0,
+    axis.text = element_text(size = 6)
+  )
 ```
 
 **DVS-2: I use plot modifications to make my visualization clear to the reader.**
@@ -497,7 +526,37 @@ ggplot(data = surveys, aes(x = weight, y = species)) +
 ```{r}
 #| label: dvs-2-3
 
+# Lab 4 Question 6
 
+ca_childcare |> 
+  # data cleaning
+  pivot_longer(cols = mc_infant:mc_preschool,
+               names_to = "study_group",
+               values_to = "median_amount") |>
+  select(study_year, study_group, median_amount, region) |>
+  mutate(study_group = str_to_title(str_remove(study_group, "mc_")),
+         study_group = fct_relevel(study_group, "Infant", "Toddler", "Preschool")) |>
+  # plot
+  ggplot(mapping = aes(x = study_year,
+                       y = median_amount,
+                       color = fct_reorder2(region, study_year, median_amount))) + 
+  geom_point() +
+  facet_wrap(~study_group) +
+  geom_smooth(method = "loess") +
+  labs(
+    x = "Study Year",
+    y = "",
+    subtitle = "Weekly Median Price for Center-Based Childcare ($)",
+    color = "California Region"
+  ) +
+  scale_x_continuous(breaks = seq(2008,
+                                  2018,
+                                  by = 2)) +
+  theme_bw() +
+  theme(
+    aspect.ratio = 1.0,
+    axis.text = element_text(size = 6)
+  )
 ```
 
 **DVS-3: I show creativity in my visualizations**
@@ -514,6 +573,7 @@ ggplot(data = surveys, aes(x = weight, y = species)) +
 
 ```{r}
 #| label: dvs-3-2
+
 
 ```
 
