@@ -11,7 +11,7 @@ execute:
   echo: true
 ---
 
-[**My Grade:**]{.underline} I believe my grade equivalent to course work evidenced below to be an \_\_.
+[**My Grade:**]{.underline} I believe my grade equivalent to course work evidenced below to be an \_A\_.
 
 [**Learning Objective Evidence:**]{.underline} In the code chunks below, provide code from Lab or Challenge assignments where you believe you have demonstrated proficiency with the specified learning target. Be sure to specify **where** the code came from (e.g., Lab 4 Question 2).
 
@@ -990,7 +990,7 @@ summary(species_mod)
 
 <!-- For the revisions included in your Portfolio, to help me understand the nature of your revisions, please denote somehow the feedback I provided you (e.g., boldface, italics, colored text) before your revisions. -->
 
-Throughout the course, I would always take the feedback from Dr. Theobold and my peer and try to make each and every question from growing to successful, while also providing reflections of the changes.
+Throughout the course, I would always take the feedback from Dr. Theobold and my peer and try to make each and every question from growing to successful, while also providing reflections of the changes. For majority of my labs and challenges, I have turned in a revision no matter if I have already received a "complete" on that assignment.
 
 Example:
 
@@ -1013,7 +1013,7 @@ This requires far fewer steps!
 
 <!-- How did you extended your thinking throughout the course? How did you extend your thinking on the code examples you have provided in your portfolio? -->
 
-I always used what I learned from my past labs and practice activities in future assignments. For example, I would always use the pipe ("\|\>") whenever we have a one directional data flow. In addition, I would always complete the challenges to the best of my ability with everything I have learn thus far.
+I always used what I learned from my past labs and practice activities in future assignments. For example, I would always use the pipe ("\|\>") whenever we have a one directional data flow. In addition, I would always complete the challenges to the best of my ability with everything I have learn thus far. I sometimes try to go above and beyond the class and use resources that were not taught but can be found on online documentations (but also citing them) and learning about them.
 
 ## Peer Support & Collaboration
 
