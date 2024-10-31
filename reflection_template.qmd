@@ -404,6 +404,12 @@ ggplot(data = surveys, aes(x = weight, y = hindfoot_length)) +
 ```{r}
 #| label: r-3-example
 
+# PA 5.1 question 6
+tibble(message) |>
+  mutate(string_length = str_length(message)) |>
+  slice_max(order_by = string_length,
+            n = 1) |>
+  select(message)
 
 ```
 
@@ -889,6 +895,20 @@ teacher_evals_clean <- teacher_evals |>
 ```{r}
 #| label: pe-4-1
 
+
+# PA 4 question 5
+military_clean_na_rows <- military_clean |> 
+  filter(if_all(-Country, 
+                is.na
+                )
+         )
+```
+
+-   I can connect a data wrangling pipeline into a `ggplot()`
+
+```{r}
+#| label: pe-4-2
+
 # Lab 4 question 6
 ca_childcare |> 
   pivot_longer(cols = mc_infant:mc_preschool,
@@ -910,13 +930,6 @@ ca_childcare |>
     color = "California Region"
   ) +
   theme_bw()
-```
-
--   I can connect a data wrangling pipeline into a `ggplot()`
-
-```{r}
-#| label: pe-4-2
-
 ```
 
 ## Data Simulation & Statisical Models
@@ -981,7 +994,7 @@ Throughout the course, I would always take the feedback from Dr. Theobold and my
 
 Example:
 
-The following code was modified from the original to be clearer and more readable for the readers.
+The following code was modified from the original to be clearer and more efficient from my past labs.
 
 ```{r}
 teacher_evals_clean |> 
@@ -989,6 +1002,12 @@ teacher_evals_clean |>
   filter(n == 9) |>
   nrow()
 ```
+
+Comment I got from my revision:
+
+**Comments:**
+
+This requires far fewer steps!
 
 ## Extending My Thinking
 
@@ -999,6 +1018,8 @@ I always used what I learned from my past labs and practice activities in future
 ## Peer Support & Collaboration
 
 <!-- Include an image or a description of feedback you gave that you are proud of (either in a peer review or in Discord). -->
+
+The following is the feedback that I gave that I'm most proud of in one of my peer review. I included an in-depth review of my peer's general code formatting. I also gave some suggestions on how to write more tidy codes like `adding more spaces between "=" and adding more return statements after ","` .
 
 ![](images/clipboard-2152803014.png)
 
