@@ -34,22 +34,10 @@ surveys <- read_csv(here::here("data", "surveys.csv"))
 ```{r}
 #| label: wd-1-xlsx
 
-# PA 4 Question 3
+# Check-in 2.3 question 5
 
-# First, read the entire sheet to determine the total number of rows
-total_rows <- nrow(read_xlsx(here::here("data", "gov_spending_per_capita.xlsx"), 
-                             sheet = "Share of Govt. spending"))
-
-# Calculate n_max by excluding the first 6 and last 6 rows
-n_max_value <- total_rows - 6 - 6
-
-military_clean <- read_xlsx(here::here("data", 
-                                 "gov_spending_per_capita.xlsx"), 
-                      sheet = "Share of Govt. spending", 
-                      skip  = 6, 
-                      n_max = n_max_value, 
-                      na = c(". .", "xxx")
-                      )
+agesxl <- read_xlsx(path = here::here("check-ins", "2.1-loading-data", "Ages_Data", "ages.xlsx"), 
+                    sheet = "ages")
 
 ```
 
@@ -144,16 +132,13 @@ ca_childcare |>
 ```{r}
 #| label: wd-3-date
 
-# PA 5.2 Question 3
+# Lab 5
 
-suspects <- suspects |> 
-  mutate(Weekdays = wday(Time.Spotted,
-              label = TRUE,
-              abbr = FALSE
-              )
-         ) |> 
-  filter(!Weekdays %in% c("Tuesday","Thursday"))
-suspects
+sql_city_crimes <- crime_scene_report |>
+  filter(
+    city == "SQL City",
+    ymd(date) == ymd("20180115")
+  )
 
 ```
 
@@ -181,11 +166,24 @@ teacher_evals_clean <- teacher_evals |>
 ```{r}
 #| label: wd-4-string
 
-# PA 5.1 question 3 (decode the message)
-clean_message_remove_ugh <- str_remove_all(clean_message_truncate_16,
-           pattern = "ugh+[:punct:]"
-           )
-clean_message_remove_ugh
+# Lab 4 question 3
+
+ca_childcare <- ca_childcare |> 
+  mutate(county_name = str_remove(county_name, " County")) |>
+  mutate(region = fct_collapse(county_name,
+                              "Superior California" = c("Butte", "Colusa", "El Dorado", "Glenn", "Lassen", "Modoc", "Nevada", "Placer", "Plumas", "Sacramento", "Shasta", "Sierra", "Siskiyou", "Sutter", "Tehama","Yolo", "Yuba"),
+                              "North Coast" = c("Del Norte", "Humboldt", "Lake", "Mendocino", "Napa", "Sonoma", "Trinity"),
+                              "San Francisco Bay Area" = c("Alameda", "Contra Costa", "Marin", "San Francisco", "San Mateo",
+             "Santa Clara", "Solano"),
+                              "Northern San Joaquin Valley" = c("Alpine", "Amador", "Calaveras", "Madera", "Mariposa", "Merced", "Mono",
+             "San Joaquin", "Stanislaus", "Tuolumne"),
+                              "Central Coast" = c("Monterey", "San Benito", "San Luis Obispo", "Santa Barbara", "Santa Cruz","Ventura"),
+                              "Southern San Joaquin Valley" = c("Fresno", "Inyo", "Kern", "Kings", "Tulare"),
+                              "Inland Empire" = c("Riverside", "San Bernardino"),
+                              "Los Angeles County" = c("Los Angeles"),
+                              "Orange County" = c("Orange"),
+                              "San Diego-Imperial" = c("Imperial", "San Diego")
+  ))
 
 ```
 
@@ -219,22 +217,12 @@ ca_childcare <- ca_childcare |>
 ```{r}
 #| label: wd-4-date
 
-# PA 5.2 Question 5
-
-# Define start and end time for the sunset period
-start_time <- hms("08:00:00")
-end_time <- hms("16:00:00")
-
-# Filter suspects based on whether the time spotted is between 4:00 PM and 11:59 PM
-suspects <- suspects |>
-  mutate(
-    TimeOnly = hms(format(Time.Spotted, "%H:%M:%S")) # Extract time-only part
-  ) |>
+# Lab 5
+sql_city_crimes <- crime_scene_report |>
   filter(
-    TimeOnly >= start_time & TimeOnly < end_time # Direct comparison
+    city == "SQL City",
+    ymd(date) == ymd("20180115")
   )
-
-suspects
 
 ```
 
@@ -245,8 +233,6 @@ suspects
 ```{r}
 #| label: wd-5-left
 
-# Check-in 4.1 Question 3
-left_join(prof_info, prof_course)
 
 ```
 
@@ -264,7 +250,11 @@ left_join(prof_info, prof_course)
 ```{r}
 #| label: wd-5-inner
 
-
+# Lab 5
+witness_1_interview <- person |>
+  filter(address_street_name == "Northwestern Dr") |>
+  slice_max(order_by = address_number, n = 1) |>
+  inner_join(interview, join_by(id == person_id))
 
 ```
 
@@ -273,13 +263,6 @@ left_join(prof_info, prof_course)
 ```{r}
 #| label: wd-5-full
 
-# Check-in 4.1 question 4
-
-prof_course |>
-  pivot_longer(cols = c(Stat_331, Stat_330, Stat_431),
-               names_to = "course",
-               values_to = "can_teach") |> 
-  full_join(course_info)
 ```
 
 **WD-6: I can use filtering joins to filter rows from a dataframe.**
@@ -297,13 +280,6 @@ prof_course |>
 ```{r}
 #| label: wd-6-anti
 
-
-# PA 4 question 4
-
-military_clean <- anti_join(military_clean,
-                            cont_region, by = join_by(Country == Region)
-                            )
-
 ```
 
 **WD-7: I can pivot dataframes from long to wide and visa versa**
@@ -313,12 +289,37 @@ military_clean <- anti_join(military_clean,
 ```{r}
 #| label: wd-7-long
 
-# PA 4 Question 6
-military_long <- military_clean |> 
-  pivot_longer("1988":"2019",
-               names_to = "Year",
-               values_to = "Spending"
-               )
+# Lab 4 question 6
+
+ca_childcare |> 
+  # data cleaning
+  pivot_longer(cols = mc_infant:mc_preschool,
+               names_to = "study_group",
+               values_to = "median_amount") |>
+  select(study_year, study_group, median_amount, region) |>
+  mutate(study_group = str_to_title(str_remove(study_group, "mc_")),
+         study_group = fct_relevel(study_group, "Infant", "Toddler", "Preschool")) |>
+  # plot
+  ggplot(mapping = aes(x = study_year,
+                       y = median_amount,
+                       color = fct_reorder2(region, study_year, median_amount))) + 
+  geom_point() +
+  facet_wrap(~study_group) +
+  geom_smooth(method = "loess") +
+  labs(
+    x = "Study Year",
+    y = "",
+    subtitle = "Weekly Median Price for Center-Based Childcare ($)",
+    color = "California Region"
+  ) +
+  scale_x_continuous(breaks = seq(2008,
+                                  2018,
+                                  by = 2)) +
+  theme_bw() +
+  theme(
+    aspect.ratio = 1.0,
+    axis.text = element_text(size = 6)
+  )
 ```
 
 -   `pivot_wider()`
@@ -404,12 +405,15 @@ ggplot(data = surveys, aes(x = weight, y = hindfoot_length)) +
 ```{r}
 #| label: r-3-example
 
-# PA 5.1 question 6
-tibble(message) |>
-  mutate(string_length = str_length(message)) |>
-  slice_max(order_by = string_length,
-            n = 1) |>
-  select(message)
+
+# Lab 3 quetsion 5
+teacher_evals_clean <- teacher_evals |> 
+  rename(sex = gender) |>
+  filter(no_participants > 10) |> 
+  mutate(
+    across(.cols = c(teacher_id:class_duration), as.numeric)
+  ) |> 
+  select(course_id:SET_score_avg, percent_failed, academic_degree, seniority, sex)
 
 ```
 
@@ -467,9 +471,7 @@ ggplot(data = surveys, aes(x = weight, y = species)) +
 ```{r}
 #| label: dvs-2-cat
 
-# https://r-primers.andrewheiss.com/visualize-data/02-bar-charts/02-aesthetics.html
-ggplot(data = diamonds) +
-  geom_bar(mapping = aes(x = cut, color = cut))
+
 
 ```
 
@@ -895,13 +897,9 @@ teacher_evals_clean <- teacher_evals |>
 ```{r}
 #| label: pe-4-1
 
-
-# PA 4 question 5
-military_clean_na_rows <- military_clean |> 
-  filter(if_all(-Country, 
-                is.na
-                )
-         )
+# Lab 3 quetsion 7
+teacher_evals_clean |> 
+  filter(if_any(everything(), is.na))
 ```
 
 -   I can connect a data wrangling pipeline into a `ggplot()`
