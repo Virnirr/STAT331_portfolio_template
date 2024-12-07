@@ -12,7 +12,7 @@ editor: visual
 
 2.  What was the most difficult part of the class for you? List a general topic, a specific problem, a kind of work we did, etc. and explain why.\
     \
-    The most difficult problem in this class was definitely forecat (factor) and utilizing it to change the ordering of graphs.
+    The most difficult problem in this class was definitely forecat (factor) and utilizing it to change the ordering of graphs. It was hard to wrap my head around using forcats since it was the first time I learned about using factors in my graphs.
 
 3.  What was the easiest part of the class for you? Explain why.\
     \
